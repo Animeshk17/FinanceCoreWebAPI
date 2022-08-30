@@ -12,5 +12,8 @@ namespace FinanceCoreWebAPI.Models
         public DbSet<User> Users { get; set; }
         public DbSet<UserLoginViewModel> UsersLogin { get; set; }
         public DbSet<LoginDetails> LoginDetails { get; set; }
+        public DbSet<Card> Cards { get; set; }
+        public DbSet<Order> Orders { get; set; }
+
     }
 }

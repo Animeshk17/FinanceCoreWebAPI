@@ -25,34 +25,64 @@ namespace FinanceCoreWebAPI.Controllers
             return Ok(data);
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<IEnumerable<UserLoginViewModel>> Get(int id)
+        //[HttpGet("{id}")]
+        //public ActionResult<IEnumerable<UserLoginViewModel>> Get(int id)
+        //{
+        //    var userLoginData = _context.LoginDetails.FirstOrDefault(c => c.UserId == id);
+        //    return Ok(userLoginData);
+        //}
+
+        [HttpGet("{email}")]
+        public ActionResult<IEnumerable<LoginDetails>> Get(string email)
         {
-            var user = _context.Users.FirstOrDefault(c => c.UserId == id);
-            return Ok(user);
+            var userLoginData = _context.LoginDetails.FirstOrDefault(c => c.UserEmail == email);
+            return Ok(userLoginData);
         }
 
-        [HttpPost]
-        public ActionResult Post(LoginDetails newLoginDetails)
+        /// <summary>
+        /// The API powering the login page.
+        /// </summary>
+        /// <param name="loginDetails"> Logindetails object </param>
+        /// <returns> ActionResult </returns>
+        [HttpPost("{email}")]
+        public ActionResult Post(LoginDetails loginDetails)
         {
-            _context.LoginDetails.Add(newLoginDetails);
-            _context.SaveChanges();
+            string userEnteredEmail = loginDetails.UserEmail;
+            string userEnteredPassword = loginDetails.Password;
+            var data = _context.LoginDetails.FirstOrDefault(c => c.UserEmail == userEnteredEmail);
+            if(data == null)
+            {
+                return NotFound();
+            }
+            else if(userEnteredPassword == data.Password)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
 
-            return Ok();
             //return CreatedAtAction("Get", new { id = newLoginDetails.UserId }, newLoginDetails);
         }
-
-        [HttpPut("{id}")]
-        public ActionResult Put(int id, LoginDetails modified)
+        /// <summary>
+        /// The API powering the Forgot Password Option
+        /// </summary>
+        /// <param name="email"> the email associated with the user </param>
+        /// <param name="newLoginDetails"> new login details </param>
+        /// <returns></returns>
+        [HttpPut("{email}")]
+        public ActionResult Put(LoginDetails newLoginDetails)
         {
-            var data = _context.LoginDetails.FirstOrDefault(c => c.UserId == id);
+            var email = newLoginDetails.UserEmail;
+            var data = _context.LoginDetails.FirstOrDefault(c => c.UserEmail == email);
             if (data == null)
                 return BadRequest();
             else
             {
-                data.UserEmail = modified.UserEmail;
-                data.Password = modified.Password;
-                data.ConfirmPassword = modified.ConfirmPassword;
+                data.Password = newLoginDetails.Password;
+                data.ConfirmPassword = newLoginDetails.ConfirmPassword;
+                //TODO: Add try-catch block here
                 _context.SaveChanges();
                 return Ok();
             }

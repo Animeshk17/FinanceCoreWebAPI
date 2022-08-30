@@ -6,6 +6,9 @@ using System.Linq;
 
 namespace FinanceCoreWebAPI.Controllers
 {
+    /// <summary>
+    /// This controller is used to Perform CRUD options on the User Table
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -17,6 +20,7 @@ namespace FinanceCoreWebAPI.Controllers
             _context = context;
         }
 
+        //Method to get list of all the users
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
@@ -24,6 +28,7 @@ namespace FinanceCoreWebAPI.Controllers
             return Ok(UserList);
         }
 
+        //Method to get the user based on the id
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<User>> Get(int id) {
             var user = _context.Users.FirstOrDefault(c => c.UserId == id);

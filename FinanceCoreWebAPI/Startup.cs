@@ -37,7 +37,6 @@ namespace FinanceCoreWebAPI
                     options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
                 });
             });
-            services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FinanceCoreWebAPI", Version = "v1" });
@@ -54,6 +53,8 @@ namespace FinanceCoreWebAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FinanceCoreWebAPI v1"));
             }
 
+            app.UseCors("default");
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();

@@ -18,7 +18,10 @@ namespace FinanceCoreWebAPI.Controllers
         {
             _context = context;
         }
-
+        /// <summary>
+        /// Used to get the complete list of Registered Users 
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ActionResult<IEnumerable<User>> Get()
         {
@@ -27,6 +30,11 @@ namespace FinanceCoreWebAPI.Controllers
             return Ok(data);
         }
 
+        /// <summary>
+        /// Used to get the registered user depending upon the userId provided
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<UserLoginViewModel>> Get(int id)
         {
