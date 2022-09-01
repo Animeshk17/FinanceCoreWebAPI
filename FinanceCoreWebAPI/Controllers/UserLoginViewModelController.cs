@@ -23,10 +23,11 @@ namespace FinanceCoreWebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ActionResult<IEnumerable<User>> Get()
+        public ActionResult<IEnumerable<UserLoginViewModel>> Get()
         {
             var data = _context.UsersLogin.FromSqlInterpolated($"dbo.SP_CreateUserLoginDetailsView")
                 .ToList();
+
             return Ok(data);
         }
 
@@ -38,7 +39,8 @@ namespace FinanceCoreWebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<UserLoginViewModel>> Get(int id)
         {
-            var user = _context.Users.FirstOrDefault(c => c.UserId == id);
+            var data = _context.UsersLogin.FromSqlInterpolated($"dbo.SP_CreateUserLoginDetailsView").ToList();
+            var user = data.FirstOrDefault(c => c.UserId == id);
             return Ok(user);
         }
 
@@ -51,6 +53,7 @@ namespace FinanceCoreWebAPI.Controllers
             newuser.Address = userloginviewmodelobject.Address;
             newuser.Account_number = userloginviewmodelobject.Account_number;
             newuser.Ifsc_code = userloginviewmodelobject.Ifsc_code;
+            newuser.CardType = userloginviewmodelobject.CardType;
             newuser.Is_verified = false;
 
             _context.Users.Add(newuser);
@@ -64,10 +67,24 @@ namespace FinanceCoreWebAPI.Controllers
             newuserlogindetail.UserEmail = userloginviewmodelobject.UserEmail;
             newuserlogindetail.Password = userloginviewmodelobject.Password;
             newuserlogindetail.ConfirmPassword = userloginviewmodelobject.ConfirmPassword;
-
-            newuser.Account_number = userloginviewmodelobject.Account_number;
             _context.LoginDetails.Add(newuserlogindetail);
+
+            var newCard = new Card();
+            newCard.UserId = newusercreated.UserId;
+            newCard.CardType = newusercreated.CardType;
+            if(newCard.CardType == "Basic")
+            {
+                newCard.AccountBalance = 40000;
+            }
+            else
+            {
+                newCard.AccountBalance = 100000;
+            }
+            newCard.ExpiryDate = DateTime.MaxValue;
+            _context.Cards.Add(newCard);
+            //newuser.Account_number = userloginviewmodelobject.Account_number;
             _context.SaveChanges();
+
             return Ok();
             //return createdataction("get", new { id = newuserlogin.userid }, newuserlogin);
         }

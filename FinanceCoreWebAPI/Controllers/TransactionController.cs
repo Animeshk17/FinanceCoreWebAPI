@@ -8,54 +8,53 @@ namespace FinanceCoreWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class TransactionController : ControllerBase
     {
         public AppDbContext _context { get; set; }
-        public int OrderNumber = 1;
 
-        public OrderController(AppDbContext context)
+        public TransactionController(AppDbContext context)
         {
             _context = context;
         }
 
         //Method to get list of all the Orders
         [HttpGet]
-        public ActionResult<IEnumerable<Order>> Get()
+        public ActionResult<IEnumerable<Transaction>> Get()
         {
-            var OrderList = _context.Orders.ToList();
+            var OrderList = _context.Transactions.ToList();
             return Ok(OrderList);
         }
 
         //Method to get the Order related to a UserId
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Order>> Get(int id)
+        public ActionResult<IEnumerable<Transaction>> Get(int id)
         {
-            var user = _context.Orders.FirstOrDefault(c => c.UserId == id);
+            var user = _context.Transactions.FirstOrDefault(c => c.UserId == id);
             return Ok(user);
         }
 
         [HttpPost]
-        public ActionResult Post(Order newOrder)
+        public ActionResult Post(Transaction newTransaction)
         {
-            var OrderList = _context.Orders.ToList();
-            Order lastOrder = OrderList.Last();
-            newOrder.OrderId = lastOrder.OrderId+1;
-            _context.Orders.Add(newOrder);
+            var TransactionList = _context.Transactions.ToList();
+            Transaction lastTransaction = TransactionList.Last();
+            newTransaction.TransactionId = lastTransaction.TransactionId + 1;
+            _context.Transactions.Add(newTransaction);
             _context.SaveChanges();
 
             //return Ok();
-            return CreatedAtAction("Get", new { id = newOrder.OrderId }, newOrder);
+            return CreatedAtAction("Get", new { id = newTransaction.TransactionId }, newTransaction);
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
-            var data = _context.Orders.FirstOrDefault(c => c.OrderId == id);
+            var data = _context.Transactions.FirstOrDefault(c => c.TransactionId == id);
             if (data == null)
                 return NotFound();
             else
             {
-                _context.Orders.Remove(data);
+                _context.Transactions.Remove(data);
                 _context.SaveChanges();
                 return Ok();
             }

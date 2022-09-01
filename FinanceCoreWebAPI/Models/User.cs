@@ -12,5 +12,6 @@ namespace FinanceCoreWebAPI.Models
         public string Account_number { get; set; }
         public string Ifsc_code { get; set; }
         public bool Is_verified { get; set; }
+        public string CardType { get; set; }
     }
 }

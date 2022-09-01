@@ -53,7 +53,7 @@ namespace FinanceCoreWebAPI.Controllers
                 return BadRequest();
             else
             {
-                data.Name = modifiedUser.Name;
+                data.Is_verified = modifiedUser.Is_verified;
                 _context.SaveChanges();
                 return Ok();
             }
